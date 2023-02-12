@@ -43,15 +43,15 @@ nnoremap <C-l> <C-w>l
 vnoremap <C-c> :y+<CR>
 " autoclose braces
 inoremap { {}<Esc>ha
-inoremap ( ()<Esc>ha
-inoremap [ []<Esc>ha
-inoremap " ""<Esc>ha
-inoremap ' ''<Esc>ha
-inoremap ` ``<Esc>ha
 " autorun mapping
 nnoremap <F5>   :silent call AutoRun()<CR>
 nnoremap <F6>   :silent call Run()<CR>
 nnoremap <F7>   <C-w>o
+nnoremap <F8>   :silent call Run_with_time()<CR>
+inoremap <F5>   <Esc>:silent call AutoRun()<CR>
+inoremap <F6>   <Esc>:silent call Run()<CR>
+inoremap <F7>   <Esc><C-w>o
+inoremap <F8>   :silent call Run_with_time()<CR>
 
 
 " Abbreviate
@@ -61,7 +61,6 @@ abbreviate pii pair<int, int>
 " Running setting
 autocmd BufNewFile *.cpp 0r ~/cpp_template.cpp
 set makeprg=g++\ %\ -o\ %<\ -Wall\ -std=c++14\ -O2
-
 
 
 " function
@@ -77,6 +76,16 @@ function Set()
 endfunc
 
 function Run()
+    call Set()
+    " !(time ./%< <%<.in >%<.out)2>>%<.out
+    !(./%< <%<.in >%<.out)2>>%<.out
+    belowright vsplit %<.in
+    belowright sview %<.out
+    wincmd t
+    redraw!
+endfunc
+
+function Run_with_time()
     call Set()
     !(time ./%< <%<.in >%<.out)2>>%<.out
     belowright vsplit %<.in
@@ -97,3 +106,4 @@ function AutoRun()
         redraw!
     endif
 endfunc
+
